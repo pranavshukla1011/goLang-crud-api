@@ -55,6 +55,25 @@ func (h *studentsHandler) students (w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//creating store
+func newstudentsHandler()*studentsHandler{
+	return &studentsHandler{
+		store: map[string]Student{},
+	}
+}
+
+//server init
+func main(){
+	studentsHandler := newstudentsHandler()
+	http.HandleFunc("/students", studentsHandler.students)
+	http.HandleFunc("/students/", studentsHandler.student)
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil{
+		panic(err)
+	}
+}
+
+
 func (h *studentsHandler) student (w http.ResponseWriter, r *http.Request) {
 	switch r.Method{
 		case "GET_STUDENT":
@@ -298,21 +317,4 @@ func (h *studentsHandler) deletestudent (w http.ResponseWriter, r *http.Request)
 	}
 	delete(h.store, parts[2])
 	println("deleted field %s", parts[2]);
-}
-
-//creating store
-func newstudentsHandler()*studentsHandler{
-	return &studentsHandler{
-		store: map[string]Student{},
-	}
-}
-
-func main(){
-	studentsHandler := newstudentsHandler()
-	http.HandleFunc("/students", studentsHandler.students)
-	http.HandleFunc("/students/", studentsHandler.student)
-	err := http.ListenAndServe(":8080", nil)
-	if err != nil{
-		panic(err)
-	}
 }
